@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>A Portfolio of Little Things</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="index.html">zackmiller</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="index.html">Home</a>
+                    </li>
+                    <li>
+                        <a href="about.html">About</a>
+                    </li>
+                    <li>
+                        <a href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('img/about-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>LawnCron</h1>
+                        <h2>Irrigation Automation</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+                    <p>LawnCron is a combination of software that uses a Raspberry Pi to automate and schedule lawn and garden irrigation. This project is the result of my laziness and inability to adequately and consistently water my plants. LawnCron solves this problem for me, it keeps a schedule and performs ad hoc actions, all of which are controlled via a simple user interface. &nbsp;</p>
+                    <p>There are multiple products available that accomplish the same goal -- but the price is steep and they either require a local connection to my home internet or some hackery of my home router. &nbsp;I wanted a system that was accessible anywhere in the world and didn&rsquo;t require me to open a port on my router. &nbsp;I wanted the setup to be as simple as possible.</p>
+                    <h2>Design Ideas</h2>
+                    <p>I didn't need much; I just wanted a mechanism that allowed me to crease schedules and run them on a periodic interval. &nbsp;I wanted the ability to start or stop a schedule at any time from anywhere and I wanted the ability to control multiple zones independently. When I first started the project, this was my MVP:</p>
+                    <ol>
+                    <li>Interact with the Raspberry Pi via a user interface</li>
+                    <li>Login and register an account</li>
+                    <li>Create Raspberry PI IDs that establish a connection to the web server</li>
+                    <li>Create schedules across four different zones on a Raspberry Pi</li>
+                    <li>Play, stop, delete, and edit a schedule</li>
+                    <li>Create a simple and compact circuit that supplies 12v to the solenoid valves</li>
+                    <li>Allow interaction with the Raspberry Pi to happen over the internet without maintaining a local network connection or modifying the router's configuration</li>
+                    </ol>
+                    <h2>Software</h2>
+                    <p>LawnCron's software utilizes two major pieces of technology: RabbitMQ and Raspbian OS. &nbsp;I use RabbitMQ to send messages to my Raspberry Pi and upon receiving the message my Raspberry Pi will either create, delete, update, start, or stop a schedule. Schedules are set via cron and schedules are ran via a custom valve driver that uses the Rasperry Pi's GPIO pins.</p>
+                    <h3>Web Server</h3>
+                    <p>To interact with my Raspberry Pi I build a website that&rsquo;s hosted on my webserver (<a href="http://www.lawncron.com">www.lawncron.com</a>). &nbsp;To get started I create an account and register a Raspberry Pi. &nbsp;This provides me with a unique, randomly generated identifier that I use to establish a RabbitMQ channel with my web server. &nbsp;I can create various schedules across four zones on the Raspberry Pi; each zone has it&rsquo;s own solenoid valve and can be operated independently of the other three.</p>
+                    <h3>Raspberry Pi</h3>
+                    <p>Once I&rsquo;ve registered an account and created a Raspberry Pi ID I can plug the ID into my Raspberry Pi&rsquo;s LawnCron configuration and start the LawnCron service. &nbsp;I can tell if my Raspberry Pi is online by looking at the RPi page of my website (www.lawncorn.com/rpis)</p>
+                    <p>If my Raspberry Pi needs to create, mutate, or delete a schedule then it uses a python library called python-crontab. &nbsp;This library offers an interface to the Raspberry Pi&rsquo;s cron scheduler. &nbsp;Entries are added or removed from a cron file; each entry invokes a valve driver at a specific time and day.</p>
+                    <p>The valve driver is responsible for opening and closing a solenoid valve that&rsquo;s connected to my outside faucet. &nbsp;If my Raspberry Pi needs to start a schedule then it will create a child process that invokes the valve driver directly.</p>
+                    <p>LawnCron&rsquo;s valve driver is a simple python script that establishes a local RabbitMQ connection and controls a GPIO pin on the Raspberry Pi. &nbsp;&nbsp;The valve driver uses RabbitMQ to communicate with the main process, in the event a schedule needs to be stopped. &nbsp;When the valve driver turns on a GPIO pin a 3.3v signal is sent to LawnCron&rsquo;s circuitry.</p>
+                    <p>There is a collection of PID files that contain information about a running schedule. &nbsp;These pid files are periodicially checked, if a schedule failed to stop at the appropriate time then the process will be killed and the GPIO pin will be shut off. &nbsp;</p>
+                    <h2>Hardware</h2>
+                    <p>LawnCron&rsquo;s circuitry is simple. &nbsp;There are four different zones on the circuit and each one is identical to the rest. &nbsp;Each zone acts as a switch that provides 12v power to a terminal block; terminal blocks are connected to a 12v solenoid valve by a pair of wires. &nbsp;When the signal is on the valve is open and water flows through. &nbsp;A LED is attached to each zone to indicate the state of the valve.</p>
+                    <h3>Circuit</h3>
+                    <p>The design of the circuit can work with either a prototype board or a PCB. I prefer to use a PCB because the connections are solid and there is a massive reduction of loose wires. I can also mount the PCB directly onto the Raspberry Pi.</p>
+                    <h3>Valves</h3>
+                    <p>Although the software supports four valves, I&rsquo;ve opted to use three. I purchased my solenoid valves through SparkFun Electronics -- they are &frac34; inch 12v solenoid valves that hook up nicely to a garden hose. &nbsp;I also purchased a four way splitter from Ace Hardware and three female to female swivel hose adapters.</p>
+                    <p>To connect the valves to my Raspberry Pi I used an ethernet cable and split apart the 8 wires. &nbsp;I used 6 of the wires and connected them to the solenoid valves by using red female wire connectors. &nbsp;I then ran the other end of the ethernet cable to my Raspberry Pi and connected the opposite ends to each zone&rsquo;s terminal block.</p>
+                    <h2>More Info</h2>
+                    <p>There is so much more that can be done in terms of features, reliability, and maintenance. &nbsp;I welcome anyone to submit a pull request and contribute to the project. If you don't know where to start or have an any issues, please contact me, I'm happy to help or point you in the right direction.</p>
+                    <h3>Future Enhancements</h3>
+                    <p>Since LawnCron uses a Raspberry Pi there are many features that can be added. For example, it would be easy to integrate with a weather service and watch for weather patterns -- specifically precipitation. &nbsp;It would also be straightforward to connect a few mini weather stations that monitor temperature, humidity, and light intensity. &nbsp;</p>
+                    <p>If you have any ideas feel free to implement them! You can submit pull requests and I will gladly accept them. &nbsp;Feel free to touch any part of the software, including the web server.</p>
+                    <h3>Bugs, Reliability, and Maintenance</h3>
+                    <p>I wrote the software in a week and designed the circuit in a few days. &nbsp;I would be surprised if this was perfect and bugfree. &nbsp;I will say, however, that I&rsquo;ve used this for over a month and I&rsquo;ve had no major issues. &nbsp;My lawn is regularly watered and I can stop or start a schedule with no problems. &nbsp;</p>
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Your Website 2016</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
