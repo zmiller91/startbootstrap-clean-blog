@@ -1,8 +1,12 @@
+
+
 var app = angular.module('zackmiller', ['ngRoute']);
 
-app.controller('HeaderCtrl', function($scope, ContentData) {
-    $scope.background = ContentData.background;
+
+app.controller('HeaderCtrl', function($scope, PageData) {
+    $scope.background = PageData.background;
 });
+
 
 app.directive('navigation', [function() {
     return {
@@ -10,21 +14,24 @@ app.directive('navigation', [function() {
     };
 }]);
 
-app.directive('zmHeader', ['ContentData', function(ContentData) {
+
+app.directive('zmHeader', ['PageData', function(PageData) {
     return {
         templateUrl: function() {
-            return ContentData.header;
+            return PageData.header;
         }
     };
 }]);
 
-app.directive('zmContent', ['ContentData', function(ContentData) {
+
+app.directive('zmContent', ['PageData', function(PageData) {
     return {
         templateUrl: function() {
-            return ContentData.article;
+            return PageData.article;
         }
     };
 }]);
+
 
 app.directive('zmFooter', [function() {
     return {
@@ -32,7 +39,8 @@ app.directive('zmFooter', [function() {
     };
 }]);
 
-app.service('ContentData', [function() {
+
+app.service('PageData', [function() {
 
         this.set = function(content) {
             this.header = 'html/header/' + content + '.html';
@@ -43,15 +51,34 @@ app.service('ContentData', [function() {
         this.set('homepage');
 }]);
 
+
 app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider
 
+        .when('/about', {
+            templateUrl: 'html/site.html',
+            resolve: {
+                init: ['PageData', function(PageData) {
+                    PageData.set('about');
+                }]
+            }
+        })
+
+        .when('/contact', {
+            templateUrl: 'html/site.html',
+            resolve: {
+                init: ['PageData', function(PageData) {
+                    PageData.set('contact');
+                }]
+            }
+        })
+
         .when('/lawncron', {
             templateUrl: 'html/site.html',
             resolve: {
-                init: ['ContentData', function(ContentData) {
-                    ContentData.set('lawncron');
+                init: ['PageData', function(PageData) {
+                    PageData.set('lawncron');
                 }]
             }
         })
@@ -59,8 +86,8 @@ app.config(function($routeProvider, $locationProvider) {
         .otherwise({
             templateUrl: 'html/site.html',
             resolve: {
-                init: ['ContentData', function(ContentData) {
-                    ContentData.set('homepage');
+                init: ['PageData', function(PageData) {
+                    PageData.set('homepage');
                 }]
             }
         });
