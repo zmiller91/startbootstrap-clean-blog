@@ -11,26 +11,28 @@
 <li>Create a simple and compact circuit that supplies 12v to the solenoid valves</li>
 <li>Allow interaction with the Raspberry Pi to happen over the internet without maintaining a local network connection or modifying the router's configuration</li>
 </ol>
-<img src="img/lawncron_preview.png"/>
+<img src="img/lawncron/lawncron_preview.png"/>
 <h2>Software</h2>
 <p>LawnCron's software utilizes two major pieces of technology: RabbitMQ and Raspbian OS. &nbsp;I use RabbitMQ to send messages to my Raspberry Pi and upon receiving the message my Raspberry Pi will either create, delete, update, start, or stop a schedule. Schedules are set via cron and schedules are ran via a custom valve driver that uses the Rasperry Pi's GPIO pins.</p>
 <h3>Web Server</h3>
 <p>To interact with my Raspberry Pi I build a website that&rsquo;s hosted on my webserver (<a href="http://www.lawncron.com">www.lawncron.com</a>). &nbsp;To get started I create an account and register a Raspberry Pi. &nbsp;This provides me with a unique, randomly generated identifier that I use to establish a RabbitMQ channel with my web server. &nbsp;I can create various schedules across four zones on the Raspberry Pi; each zone has it&rsquo;s own solenoid valve and can be operated independently of the other three.</p>
+<img src="img/lawncron/rpi.jpg"/>
 <h3>Raspberry Pi</h3>
 <p>Once I&rsquo;ve registered an account and created a Raspberry Pi ID I can plug the ID into my Raspberry Pi&rsquo;s LawnCron configuration and start the LawnCron service. &nbsp;I can tell if my Raspberry Pi is online by looking at the RPi page of my website (www.lawncorn.com/rpis)</p>
 <p>If my Raspberry Pi needs to create, mutate, or delete a schedule then it uses a python library called python-crontab. &nbsp;This library offers an interface to the Raspberry Pi&rsquo;s cron scheduler. &nbsp;Entries are added or removed from a cron file; each entry invokes a valve driver at a specific time and day.</p>
 <p>The valve driver is responsible for opening and closing a solenoid valve that&rsquo;s connected to my outside faucet. &nbsp;If my Raspberry Pi needs to start a schedule then it will create a child process that invokes the valve driver directly.</p>
 <p>LawnCron&rsquo;s valve driver is a simple python script that establishes a local RabbitMQ connection and controls a GPIO pin on the Raspberry Pi. &nbsp;&nbsp;The valve driver uses RabbitMQ to communicate with the main process, in the event a schedule needs to be stopped. &nbsp;When the valve driver turns on a GPIO pin a 3.3v signal is sent to LawnCron&rsquo;s circuitry.</p>
 <p>There is a collection of PID files that contain information about a running schedule. &nbsp;These pid files are periodicially checked, if a schedule failed to stop at the appropriate time then the process will be killed and the GPIO pin will be shut off. &nbsp;</p>
+<img src="img/lawncron/kit.jpg"/>
 <h2>Hardware</h2>
 <p>LawnCron&rsquo;s circuitry is simple. &nbsp;There are four different zones on the circuit and each one is identical to the rest. &nbsp;Each zone acts as a switch that provides 12v power to a terminal block; terminal blocks are connected to a 12v solenoid valve by a pair of wires. &nbsp;When the signal is on the valve is open and water flows through. &nbsp;A LED is attached to each zone to indicate the state of the valve.</p>
-<img src="img/bread_board_front.png"/>
 <h3>Circuit</h3>
 <p>The design of the circuit can work with either a prototype board or a PCB. I prefer to use a PCB because the connections are solid and there is a massive reduction of loose wires. I can also mount the PCB directly onto the Raspberry Pi.</p>
+<img src="img/lawncron/bread_board_front.png"/>
 <h3>Valves</h3>
 <p>Although the software supports four valves, I&rsquo;ve opted to use three. I purchased my solenoid valves through SparkFun Electronics -- they are &frac34; inch 12v solenoid valves that hook up nicely to a garden hose. &nbsp;I also purchased a four way splitter from Ace Hardware and three female to female swivel hose adapters.</p>
 <p>To connect the valves to my Raspberry Pi I used an ethernet cable and split apart the 8 wires. &nbsp;I used 6 of the wires and connected them to the solenoid valves by using red female wire connectors. &nbsp;I then ran the other end of the ethernet cable to my Raspberry Pi and connected the opposite ends to each zone&rsquo;s terminal block.</p>
-<img src="img/valve.png"/>
+<img src="img/lawncron/valve.png"/>
 <h2>More Info</h2>
 <p>There is so much more that can be done in terms of features, reliability, and maintenance. &nbsp;I welcome anyone to submit a pull request and contribute to the project. If you don't know where to start or have an any issues, please contact me, I'm happy to help or point you in the right direction.</p>
 <h3>Future Enhancements</h3>
