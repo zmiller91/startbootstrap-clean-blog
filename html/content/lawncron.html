@@ -16,7 +16,7 @@
 <p>LawnCron's software utilizes two major pieces of technology: RabbitMQ and Raspbian OS. &nbsp;I use RabbitMQ to send messages to my Raspberry Pi and upon receiving the message my Raspberry Pi will either create, delete, update, start, or stop a schedule. Schedules are set via cron and schedules are ran via a custom valve driver that uses the Rasperry Pi's GPIO pins.</p>
 <h3>Web Server</h3>
 <p>To interact with my Raspberry Pi I build a website that&rsquo;s hosted on my webserver (<a href="http://www.lawncron.com">www.lawncron.com</a>). &nbsp;To get started I create an account and register a Raspberry Pi. &nbsp;This provides me with a unique, randomly generated identifier that I use to establish a RabbitMQ channel with my web server. &nbsp;I can create various schedules across four zones on the Raspberry Pi; each zone has it&rsquo;s own solenoid valve and can be operated independently of the other three.</p>
-<img src="img/lawncron/rpi.jpg"/>
+<img src="img/lawncron/rpi_combined.jpg"/>
 <h3>Raspberry Pi</h3>
 <p>Once I&rsquo;ve registered an account and created a Raspberry Pi ID I can plug the ID into my Raspberry Pi&rsquo;s LawnCron configuration and start the LawnCron service. &nbsp;I can tell if my Raspberry Pi is online by looking at the RPi page of my website (www.lawncorn.com/rpis)</p>
 <p>If my Raspberry Pi needs to create, mutate, or delete a schedule then it uses a python library called python-crontab. &nbsp;This library offers an interface to the Raspberry Pi&rsquo;s cron scheduler. &nbsp;Entries are added or removed from a cron file; each entry invokes a valve driver at a specific time and day.</p>
